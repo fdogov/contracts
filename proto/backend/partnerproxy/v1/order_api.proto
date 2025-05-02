@@ -24,7 +24,7 @@ message CreateOrderRequest {
 
 message CreateOrderResponse {
   string order_id = 1;
-  string status = 2;
+  OrderStatus status = 2;
   google.protobuf.Timestamp created_at = 3;
 }
 
@@ -32,4 +32,12 @@ enum OrderSide {
   ORDER_SIDE_UNSPECIFIED = 0;
   ORDER_SIDE_BUY = 1;
   ORDER_SIDE_SELL = 2;
+}
+
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PENDING = 1;
+  ORDER_STATUS_COMPLETED = 2;
+  ORDER_STATUS_FAILED = 3;
+  ORDER_STATUS_CANCELLED = 4;
 }
