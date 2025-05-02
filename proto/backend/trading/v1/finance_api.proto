@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package backend.trading.v1;
+
+import "google/type/decimal.proto";
+
+option go_package = "tradingv1";
+
+service FinanceService {
+  rpc DepositFunds(DepositFundsRequest) returns (DepositFundsResponse);
+}
+
+message DepositFundsRequest {
+  string account_id = 1;
+  google.type.Decimal amount = 2; // Decimal string representation
+  string currency = 3;
+  string idempotency_key = 4;
+}
+
+message DepositFundsResponse {
+  string account_id = 1;
+  DepositStatus status = 2;
+}
+
+enum DepositStatus {
+  DEPOSIT_STATUS_UNSPECIFIED = 0;
+  DEPOSIT_STATUS_PENDING = 1;
+  DEPOSIT_STATUS_COMPLETED = 2;
+  DEPOSIT_STATUS_FAILED = 3;
+}

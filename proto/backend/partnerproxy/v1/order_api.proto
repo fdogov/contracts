@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package backend.partnerproxy.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/type/decimal.proto";
+
+option go_package = "partnerproxyv1";
+
+service OrderService {
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+}
+
+message CreateOrderRequest {
+  string idempotency_key = 1;
+  string ext_account_id = 2;
+  string symbol = 3;
+  google.type.Decimal quantity = 4;
+  google.type.Decimal price = 5;
+  google.protobuf.Timestamp created_at = 6;
+  string currency = 7;
+  OrderSide side = 8;
+}
+
+message CreateOrderResponse {
+  string order_id = 1;
+  string status = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+enum OrderSide {
+  ORDER_SIDE_UNSPECIFIED = 0;
+  ORDER_SIDE_BUY = 1;
+  ORDER_SIDE_SELL = 2;
+}

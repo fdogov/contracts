@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package backend.partnerproxy.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/type/decimal.proto";
+
+option go_package = "partnerproxyv1";
+
+service AccountService {
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse);
+}
+
+message GetAccountRequest {
+  string ext_account_id = 1;
+}
+
+message GetAccountResponse {
+  Account account = 1;
+}
+
+message Account {
+  string ext_account_id = 1;
+  string currency = 2;
+  google.type.Decimal balance = 3;
+  google.protobuf.Timestamp created_at = 4;
+}

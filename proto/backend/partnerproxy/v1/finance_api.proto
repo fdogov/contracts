@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package backend.partnerproxy.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/type/decimal.proto";
+
+option go_package = "partnerproxyv1";
+
+service FinanceService {
+  rpc CreateDeposit(CreateDepositRequest) returns (CreateDepositResponse);
+}
+
+message CreateDepositRequest {
+  string idempotency_key = 1;
+  string ext_account_id = 2;
+  google.type.Decimal amount = 3;
+  string currency = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message CreateDepositResponse {
+  string deposit_id = 1;
+  DepositStatus status = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+enum DepositStatus {
+  DEPOSIT_STATUS_UNSPECIFIED = 0;
+  DEPOSIT_STATUS_PENDING = 1;
+  DEPOSIT_STATUS_COMPLETED = 2;
+  DEPOSIT_STATUS_FAILED = 3;
+}

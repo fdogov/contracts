@@ -1,0 +1,129 @@
+= PLATA Protobuf
+:sectnums:
+:sectnumlevels: 3
+:sectanchors:
+:table-stripes: even
+:toc:
+:toclevels: 4
+
+{{range .Files}}
+
+== {{.Name}}
+
+[NOTE]
+`package {{.Package}}`
+
+{{nobr .Description}}
+
+{{if .HasServices}}
+=== Services
+
+// tag::Services[]
+
+{{range .Services}}
+// tag::{{.LongName}}[]
+
+// tag::{{.LongName}}Header[]
+
+==== {{.LongName}}
+
+    {{.FullName}}
+
+[#{{.LongName}}]
+
+{{nobr .Description}}
+
+// end::{{.LongName}}Header[]
+// tag::{{.LongName}}Content[]
+.{{.LongName}} Methods
+[cols="1,4",options="header"]
+|===
+| RPC | Description
+{{range .Methods}}
+| <<{{.Name}},{{.Name}}>>
+| ++{{nobr .Description}} ++
+
+&uarr; <<{{.RequestType}},{{.RequestType}}>>&nbsp;&nbsp;&darr; <<{{.ResponseType}},{{.ResponseType}}>>
+
+{{end}}
+|===
+
+{{range .Methods}}
+===== rpc {{.Name}}
+
+[#{{.Name}}]
+
+++{{nobr .Description}} ++
+
+
+{{end}}
+
+// end::{{.LongName}}Content[]
+// end::{{.LongName}}[]
+
+{{end}}
+
+// end::Services[]
+
+{{end}}
+
+{{if .HasMessages}}
+=== Messages
+
+// tag::Messages[]
+
+{{range .Messages}}
+
+// tag::{{.LongName}}[]
+
+
+==== {{.LongName}}
+
+    {{.FullName}}
+
+{{nobr .Description}}
+
+{{if .HasFields}}
+.{{.LongName}} Fields
+[cols="1,1,5,1",options="header"]
+|===========================================
+|Field |Type |Description |Labels
+{{range .Fields}}
+|`{{.Name}}` | `{{.Type}}` |++{{.Description}} ++ |{{.Label}}
+{{end}}
+|===========================================
+{{end}}
+
+// end::{{.LongName}}[]
+
+{{end}}
+
+// end::Messages[]
+
+{{end}}
+
+{{range .Enums}}
+// tag::{{.LongName}}[]
+
+[[{{.LongName}}]]
+=== {{.LongName}}
+{{.Description}}
+
+|=====================================
+|*Name* |*Number* |*Description*
+{{range .Values}}
+|`{{.Name}}` |{{.Number}} |++{{.Description}} ++
+{{end}}
+|=====================================
+// end::{{.LongName}}[]
+{{end}}
+{{end}}
+
+//== Scalar Type Reference
+
+//|==============================================================
+//|*.proto Type* |*Notes* |*C++ Type* |*Java Type* |*Python Type*
+{{range .Scalars}}
+//|[[{{.ProtoType}}]] ((({{.ProtoType}}))) {{.ProtoType}} |{{.Notes}} |{{.CppType}} |{{.JavaType}} |{{.PythonType}}
+{{end}}
+//|==============================================================

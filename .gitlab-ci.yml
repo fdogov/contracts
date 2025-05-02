@@ -1,0 +1,67 @@
+include:
+  - "scripts/backstage/.gitlab-ci.yml"
+
+variables:
+  CI_IMAGE_DOCKER: docker:dind
+
+lint:
+  stage: build
+  image: $CI_IMAGE_DOCKER
+  services:
+    - name: $CI_IMAGE_DOCKER
+  tags:
+    - build
+  before_script:
+    - apk add --no-cache bash
+    - ${CI_PROJECT_DIR}/scripts/ci/wait-docker-ready.sh
+    - ${CI_PROJECT_DIR}/scripts/buf/build-image.sh
+  script:
+    - |
+      echo "--> Run buf lint ..."
+      ${CI_PROJECT_DIR}/scripts/buf/run.sh buf lint
+    - |
+      echo "--> Run buf breaking ..."
+      ${CI_PROJECT_DIR}/scripts/ci/buf-breaking.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $SCHEDULE_TYPE == null
+
+check-codegen:
+  stage: build
+  image: $CI_IMAGE_DOCKER
+  services:
+    - name: $CI_IMAGE_DOCKER
+  tags:
+    - build
+  before_script:
+    - apk add --no-cache bash git
+    - ${CI_PROJECT_DIR}/scripts/ci/wait-docker-ready.sh
+    - ${CI_PROJECT_DIR}/scripts/buf/build-image.sh
+  script:
+    - ${CI_PROJECT_DIR}/scripts/buf/run.sh ./scripts/buf/cleanup.sh
+    - ${CI_PROJECT_DIR}/scripts/buf/run.sh buf generate
+    - ${CI_PROJECT_DIR}/scripts/buf/run.sh ./scripts/grpcgateway/gen_gw.sh
+    - ${CI_PROJECT_DIR}/scripts/buf/run.sh ./scripts/buf/gen_docs.sh
+    - ${CI_PROJECT_DIR}/scripts/buf/run.sh ./scripts/python/gen_python.sh
+    - ${CI_PROJECT_DIR}/scripts/ci/check-changes.sh
+    - |
+      echo "--> Validating the generated Go code compiles ..."
+      ${CI_PROJECT_DIR}/scripts/buf/go-code-compile-check.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $SCHEDULE_TYPE == null
+
+pages:
+  stage: build
+  image: alpine
+  tags:
+    - build
+  script:
+    - mkdir -vp ${CI_PROJECT_DIR}/public
+    - cp -vr ${CI_PROJECT_DIR}/third_party/OpenAPI/* ${CI_PROJECT_DIR}/public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $SCHEDULE_TYPE == null

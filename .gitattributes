@@ -1,0 +1,12 @@
+# The file describes git attributes for files per path.
+# We use .gitattributes to don't show diff in Gitlab Merge Requests for code generated files.
+# Generated Swagger is not excluded because sometimes it's useful in code review
+# (for example, to check generated fields).
+# Docs:
+#   * https://git-scm.com/docs/gitattributes
+#   * https://docs.gitlab.com/ee/user/project/git_attributes.html
+gen/**.pb.go -diff
+gen/**.pb.gw.go -diff
+gen/**.py -diff
+gen/**.pyi -diff
+gen/**.adoc -diff

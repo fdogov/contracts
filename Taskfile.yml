@@ -1,0 +1,45 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task: generate
+
+  build-buf:
+    desc: Build Docker image with buf tools
+    sources:
+      - ./Dockerfile
+    run: once
+    cmds:
+      - ./scripts/buf/build-image.sh
+
+  generate:
+    aliases:
+      - proto
+      - gen
+    desc: Generate code from proto files
+    deps:
+      - build-buf
+    cmds:
+      - ./scripts/buf/cleanup.sh
+      - ./scripts/buf/run.sh buf generate --template buf.gen.yaml
+      - echo "Protobuf files generated successfully."
+
+  clean:
+    desc: Clean generated files
+    cmds:
+      - ./scripts/buf/cleanup.sh
+      - echo "Clean completed."
+
+  docker-clean:
+    desc: Remove Docker image
+    cmds:
+      - echo "Removing Docker image..."
+      - podman rmi contracts-proto-builder || true
+      - echo "Docker image removed."
+
+  deepclean:
+    desc: Clean everything including Docker image
+    deps: [clean, docker-clean]
+    cmds:
+      - echo "Deep clean completed." 

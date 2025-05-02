@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package backend.trading.v1;
+
+import "backend/trading/v1/account.proto";
+
+option go_package = "tradingv1";
+
+service AccountService {
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse);
+  rpc GetAccountsByUserId(GetAccountsByUserIdRequest) returns (GetAccountsByUserIdResponse);
+}
+
+message GetAccountRequest {
+  string account_id = 1;
+}
+
+message GetAccountResponse {
+  Account account = 1;
+}
+
+message GetAccountsByUserIdRequest {
+  string user_id = 1;
+}
+
+message GetAccountsByUserIdResponse {
+  repeated Account accounts = 1;
+}

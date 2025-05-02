@@ -1,0 +1,63 @@
+# See: https://taskfile.dev/api/
+
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task: lint
+      - task: generate
+  buf:
+    desc: "Run buf"
+    summary: |
+      Use this task if you want to run an arbitrary command.
+      
+      Example:
+      
+        # Update proto dependencies
+        task buf -- mod update proto/
+    deps:
+      - build-buf
+    cmds:
+      - ./scripts/buf/run.sh buf {{ .CLI_ARGS }}
+  lint:
+    desc: "Lint proto files"
+    deps:
+      - build-buf
+    cmds:
+      - ./scripts/buf/run.sh buf lint
+      - ./scripts/buf/run.sh buf breaking --against ".git#ref=$(git merge-base main HEAD)" || true
+  generate:
+    aliases:
+      - proto_gen
+      - gen
+    desc: "Generate code from proto files"
+    deps:
+      - build-buf
+    cmds:
+      - ./scripts/buf/run.sh ./scripts/buf/cleanup.sh
+      - ./scripts/buf/run.sh buf generate
+      - ./scripts/buf/run.sh ./scripts/grpcgateway/gen_gw.sh
+      - ./scripts/buf/run.sh ./scripts/buf/gen_docs.sh
+      - ./scripts/buf/run.sh ./scripts/python/gen_python.sh
+      - ./scripts/buf/go-code-compile-check.sh
+  attach_hooks:
+    desc: "add git hooks"
+    cmds:
+      - cp ./githooks/prepare-commit-msg.sh ./.git/hooks/prepare-commit-msg
+      - chmod 777 ./.git/hooks/prepare-commit-msg
+  build_py:
+    desc: "build python package"
+    cmds:
+      - ./scripts/python/build.sh {{ default "all" .CLI_ARGS }}
+  checkgen:
+    desc: "check generated code"
+    cmds:
+      - ./scripts/ci/check-changes.sh
+  build-buf:
+    internal: true
+    sources:
+      - ./build/buf/**/*
+    run: once
+    cmds:
+      - ./scripts/buf/build-image.sh

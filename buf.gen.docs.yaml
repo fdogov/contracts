@@ -1,0 +1,8 @@
+version: v1
+managed:
+  enabled: true
+plugins:
+  - plugin: doc
+    out: gen/docs
+    opt:
+      - buf.gen.adoc.tmpl,docs.adoc,source_relative

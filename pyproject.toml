@@ -1,0 +1,21 @@
+[build-system]
+requires = ['setuptools>=42']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "protos"
+description = "Common protos"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+
+[options]
+python_requires = ">=3.6"
+
+[tool.setuptools]
+package-dir = { "backend" = "gen/python/backend", "buf" = "gen/python/buf", "client" = "gen/python/client", "common" = "gen/python/common", "testers" = "gen/python/testers", "google" = "gen/python/google", "protoc_gen_openapiv2" = "gen/python/protoc_gen_openapiv2" }
+
+[tool.setuptools.dynamic]
+version = {file = ["scripts/python/package-version.txt"]}

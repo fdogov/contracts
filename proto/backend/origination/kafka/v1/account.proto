@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package backend.origination.kafka.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "kafkav1";
+
+message AccountEvent {
+  string id = 1;
+  string user_id = 2;
+  string ext_account_id = 3;
+  string currency = 4;
+  google.protobuf.Timestamp created_at = 5;
+}

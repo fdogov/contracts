@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package backend.trading.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "tradingv1";
+
+message Account {
+  string id = 1;
+  string user_id = 2;
+  string balance = 3; // Decimal string representation
+  string currency = 4;
+  AccountStatus status = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+enum AccountStatus {
+  ACCOUNT_STATUS_UNSPECIFIED = 0;
+  ACCOUNT_STATUS_ACTIVE = 1;
+  ACCOUNT_STATUS_INACTIVE = 2;
+  ACCOUNT_STATUS_BLOCKED = 3;
+}

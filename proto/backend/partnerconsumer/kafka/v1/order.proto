@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package backend.partnerconsumer.kafka.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/type/decimal.proto";
+
+option go_package = "kafkav1";
+
+message OrderEvent {
+  string ext_id = 1;
+  string ext_account_id = 2;
+  google.type.Decimal amount = 3;
+  string currency = 4;
+  google.protobuf.Timestamp created_at = 5;
+  OrderStatus status = 6;
+  string symbol = 7;
+  string instrument_id = 8;
+  google.type.Decimal balance_new = 9;
+  string idempotency_key = 10;
+}
+
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PENDING = 1;
+  ORDER_STATUS_COMPLETED = 2;
+  ORDER_STATUS_FAILED = 3;
+}

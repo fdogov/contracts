@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package backend.partnerconsumer.kafka.v1;
+
+import "google/type/decimal.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "kafkav1";
+
+message DepositEvent {
+  string ext_id = 1;
+  string ext_account_id = 2;
+  google.type.Decimal amount = 3;
+  string currency = 4;
+  google.protobuf.Timestamp created_at = 5;
+  DepositStatus status = 6;
+  google.type.Decimal balance_new = 7;
+  string idempotency_key = 8;
+}
+
+enum DepositStatus {
+  DEPOSIT_STATUS_UNSPECIFIED = 0;
+  DEPOSIT_STATUS_PENDING = 1;
+  DEPOSIT_STATUS_COMPLETED = 2;
+  DEPOSIT_STATUS_FAILED = 3;
+}
