@@ -19,6 +19,44 @@ message DepositOperationEvent {
   string idempotency_key = 9;
 }
 
+message OrderOperationEvent {
+  string id = 1;
+  string user_id = 2;
+  string account_id = 3;
+  string currency = 4;
+  google.type.Decimal amount = 5;
+  google.type.Decimal balance_new = 6;
+  OrderOperationStatus status = 7;
+  google.protobuf.Timestamp created_at = 8;
+  string symbol = 9;
+  string instrument_id = 10;
+  google.type.Decimal price = 11;
+  OrderOperationType operation_type = 12;
+  OrderSide side = 13;
+  string idempotency_key = 14;
+}
+
+enum OrderSide {
+  ORDER_SIDE_UNSPECIFIED = 0;
+  ORDER_SIDE_BUY = 1;
+  ORDER_SIDE_SELL = 2;
+}
+
+enum OrderOperationType {
+  ORDER_OPERATION_TYPE_UNSPECIFIED = 0;
+  ORDER_OPERATION_TYPE_CREATE = 1;
+  ORDER_OPERATION_TYPE_UPDATE = 2;
+  ORDER_OPERATION_TYPE_CANCEL = 3;
+}
+
+enum OrderOperationStatus {
+  ORDER_OPERATION_STATUS_UNSPECIFIED = 0;
+  ORDER_OPERATION_STATUS_PENDING = 1;
+  ORDER_OPERATION_STATUS_COMPLETED = 2;
+  ORDER_OPERATION_STATUS_FAILED = 3;
+  ORDER_OPERATION_STATUS_CANCELLED = 4;
+}
+
 enum DepositOperationStatus {
   DEPOSIT_OPERATION_STATUS_UNSPECIFIED = 0;
   DEPOSIT_OPERATION_STATUS_PENDING = 1;
